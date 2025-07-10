@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { Component, createRef, MouseEvent, ReactNode, TouchEvent as ReactTouchEvent, RefObject } from "react";
 
 // Grid physics constants
 const MIN_VELOCITY = 0.2;
@@ -111,13 +111,13 @@ export type ItemConfig = {
 
 export type ThiingsGridProps = {
   gridSize: number;
-  renderItem: (itemConfig: ItemConfig) => React.ReactNode;
+  renderItem: (itemConfig: ItemConfig) => ReactNode;
   className?: string;
   initialPosition?: Position;
 };
 
 class ThiingsGrid extends Component<ThiingsGridProps, State> {
-  private containerRef: React.RefObject<HTMLElement | null>;
+  private containerRef: RefObject<HTMLElement | null>;
   private lastPos: Position;
   private animationFrame: number | null;
   private isComponentMounted: boolean;
@@ -138,7 +138,7 @@ class ThiingsGrid extends Component<ThiingsGridProps, State> {
       lastMoveTime: 0,
       velocityHistory: [],
     };
-    this.containerRef = React.createRef();
+    this.containerRef = createRef();
     this.lastPos = { x: 0, y: 0 };
     this.animationFrame = null;
     this.isComponentMounted = false;
@@ -386,14 +386,14 @@ class ThiingsGrid extends Component<ThiingsGridProps, State> {
     this.animationFrame = requestAnimationFrame(this.animate);
   };
 
-  private handleMouseDown = (e: React.MouseEvent) => {
+  private handleMouseDown = (e: MouseEvent) => {
     this.handleDown({
       x: e.clientX,
       y: e.clientY,
     });
   };
 
-  private handleMouseMove = (e: React.MouseEvent) => {
+  private handleMouseMove = (e: MouseEvent) => {
     e.preventDefault();
     this.handleMove({
       x: e.clientX,
@@ -405,7 +405,7 @@ class ThiingsGrid extends Component<ThiingsGridProps, State> {
     this.handleUp();
   };
 
-  private handleTouchStart = (e: React.TouchEvent) => {
+  private handleTouchStart = (e: ReactTouchEvent) => {
     const touch = e.touches[0];
 
     if (!touch) return;
@@ -416,7 +416,7 @@ class ThiingsGrid extends Component<ThiingsGridProps, State> {
     });
   };
 
-  private handleTouchMove = (e: TouchEvent) => {
+  private handleTouchMove = (e: globalThis.TouchEvent) => {
     const touch = e.touches[0];
 
     if (!touch) return;
@@ -462,7 +462,7 @@ class ThiingsGrid extends Component<ThiingsGridProps, State> {
 
     return (
       <div
-        ref={this.containerRef as React.RefObject<HTMLDivElement>}
+        ref={this.containerRef as RefObject<HTMLDivElement>}
         className={className}
         style={{
           position: "absolute",
